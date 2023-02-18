@@ -1,0 +1,18 @@
+includes:
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - src
+        #- tests
+    inferPrivatePropertyTypeFromConstructor: true
+    excludePaths:
+         - '%rootDir%/../../../src/Kernel.php'
+         - '%rootDir%/../../../src/Notification/Domain/Repository/NotificationRepositoryInterface.php'
+         - '%rootDir%/../../../src/Template/Domain/Repository/TemplateRepositoryInterface.php'
+         - '%rootDir%/../../../src/Verification/Domain/Repository/VerificationRepositoryInterface.php'
+    reportUnmatchedIgnoredErrors: false
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+

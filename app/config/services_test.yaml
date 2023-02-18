@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Notification\Infrastructure\Service\TemplateRenderProvider:
+        public: true
+    App\Notification\Infrastructure\Service\SmsSenderProvider:
+        public: true
+    App\Verification\Infrastructure\Service\CreateVerification:
+        public: true

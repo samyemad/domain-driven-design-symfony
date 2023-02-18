@@ -1,0 +1,74 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+
+    App\Shared\EventListener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    App\Verification\Infrastructure\Repository\VerificationRepository: ~
+
+    App\Verification\Domain\Repository\VerificationRepositoryInterface $verificationRepository: '@App\Verification\Infrastructure\Repository\VerificationRepository'
+
+    App\Template\Infrastructure\Repository\TemplateRepository: ~
+    App\Template\Domain\Repository\TemplateRepositoryInterface $templateRepository: '@App\Template\Infrastructure\Repository\TemplateRepository'
+
+    App\Notification\Infrastructure\Repository\NotificationRepository: ~
+    App\Notification\Domain\Repository\NotificationRepositoryInterface $notificationRepository: '@App\Notification\Infrastructure\Repository\NotificationRepository'
+
+    App\Verification\Application\ParamConverter\CreateVerificationParamConverter:
+        tags:
+            - { name: request.param_converter, converter: CreateVerification }
+    App\Verification\Application\ParamConverter\ConfirmVerificationParamConverter:
+        tags:
+            - { name: request.param_converter, converter: ConfirmVerification }
+    App\Template\Application\ParamConverter\TemplateRenderParamConverter:
+        tags:
+            - { name: request.param_converter, converter: TemplateRender }
+
+    App\Verification\Infrastructure\Service\UserProvider: ~
+    App\Verification\Domain\Service\Interfaces\UserProviderInterface $userProvider: '@App\Verification\Infrastructure\Service\UserProvider'
+
+    App\Verification\Infrastructure\Service\CreateVerification: ~
+    App\Verification\Domain\Service\Interfaces\CreateVerificationInterface $createVerification: '@App\Verification\Infrastructure\Service\CreateVerification'
+
+    App\Verification\Infrastructure\Service\CodeGeneratorProvider: ~
+    App\Verification\Domain\Service\Interfaces\CodeGeneratorProviderInterface $codeGeneratorProvider: '@App\Verification\Infrastructure\Service\CodeGeneratorProvider'
+
+    App\Verification\Domain\Service\CheckVerification: ~
+    App\Verification\Domain\Service\Interfaces\CheckVerificationInterface $checkVerification: '@App\Verification\Domain\Service\CheckVerification'
+
+    App\Template\Infrastructure\Render\TemplateResponseRender: ~
+    App\Template\Domain\Service\Interfaces\TemplateResponseRenderInterface $templateResponseRender: '@App\Template\Infrastructure\Render\TemplateResponseRender'
+
+    App\Notification\Infrastructure\Service\EmailSenderProvider: ~
+    App\Notification\Domain\Service\Interfaces\EmailSenderProviderInterface $emailSenderProvider: '@App\Notification\Infrastructure\Service\EmailSenderProvider'
+
+    App\Notification\Infrastructure\Service\TemplateRenderProvider: ~
+    App\Notification\Domain\Service\Interfaces\TemplateRenderProviderInterface $templateRenderProvider: '@App\Notification\Infrastructure\Service\TemplateRenderProvider'
+
+    App\Notification\Infrastructure\Service\TranslatorProvider: ~
+    App\Notification\Domain\Service\Interfaces\TranslatorProviderInterface $translatorProvider: '@App\Notification\Infrastructure\Service\TranslatorProvider'
+
+    App\Notification\Infrastructure\Service\SmsSenderProvider: ~
+    App\Notification\Domain\Service\Interfaces\SmsSenderProviderInterface $smsSenderProvider: '@App\Notification\Infrastructure\Service\SmsSenderProvider'
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones

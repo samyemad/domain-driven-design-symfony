@@ -1,0 +1,9 @@
+controllersVerification:
+    resource: ../../src/Verification/Application/Controller/
+    type: annotation
+controllersTemplate:
+    resource: ../../src/Template/Application/Controller/
+    type: annotation
+kernel:
+    resource: ../../src/Kernel.php
+    type: annotation

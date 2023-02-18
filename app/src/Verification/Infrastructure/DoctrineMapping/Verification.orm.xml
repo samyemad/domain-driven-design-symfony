@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Verification\Domain\Entity\Verification" table="verifications" repository-class="App\Verification\Infrastructure\Repository\VerificationRepository">
+        <id name="id" type="guid" column="id" length="36" />
+        <field name="confirmed" column="confirmed" type="boolean" length="1"  >
+            <options>
+                <option name="default">0</option>
+            </options>
+        </field>
+        <field name="code" column="code" type="string" length="180" />
+        <field name="suppliedTimes" column="supplied_times" type="integer" length="4">
+            <options>
+                <option name="default">0</option>
+            </options>
+
+        </field>
+        <field name="expired" column="expired" type="boolean" length="1" >
+            <options>
+                <option name="default">0</option>
+            </options>
+        </field>
+
+        <field name="createdAt" type="datetime_immutable" column="created_at"  />
+        <field name="updatedAt" type="datetime_immutable" column="updated_at" nullable="true" />
+        <embedded name="subject" class="App\Verification\Domain\Entity\Subject" use-column-prefix="true" />
+        <embedded name="userInfo" class="App\Verification\Domain\Entity\UserInfo" use-column-prefix="true" />
+    </entity>
+
+</doctrine-mapping>
