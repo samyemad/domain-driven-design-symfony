@@ -13,7 +13,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/templates/render", name="api_templates_render", methods={"POST"})
+ * @Route("/api/templates/render", name="api_templates_render", methods={"POST"})
  *
  * @ParamConverter(name="templateRenderCommand", converter="TemplateRender")
  */

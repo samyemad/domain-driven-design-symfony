@@ -54,21 +54,19 @@ final class TemplateRenderProvider implements TemplateRenderProviderInterface
     private function getHeaders(): array
     {
         return [
-            'Content-Type' => 'application/json',
-            'x-api-key' => $_ENV['API_KEY'],
+            'Content-Type' => 'application/json'
         ];
     }
 
     private function getUri(): string
     {
-        return '/templates/render';
+        return '/api/templates/render';
     }
 
     private function getCredentials(string $channel, string $code): array
     {
         $data['slug'] = $channel;
         $data['variables']['code'] = $code;
-
         return $data;
     }
 }

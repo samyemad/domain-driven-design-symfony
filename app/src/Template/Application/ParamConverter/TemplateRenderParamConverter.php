@@ -20,23 +20,12 @@ final class TemplateRenderParamConverter implements ParamConverterInterface
      */
     public function apply(Request $request, ParamConverter $configuration): bool
     {
-        $this->checkApiKeyByHeader($request->headers);
         $parameters = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $templateRenderCommand = new TemplateRenderCommand();
         $templateRenderCommand->setSlug($parameters['slug']);
         $templateRenderCommand->setAdditionalVariables($parameters['variables']);
         $request->attributes->set($configuration->getName(), $templateRenderCommand);
-
         return true;
-    }
-
-    private function checkApiKeyByHeader(HeaderBag $headers): void
-    {
-        if (null == $headers->get('x-api-key')) {
-            throw new \Exception('API Key Not Found', Response::HTTP_NOT_FOUND);
-        } elseif ($headers->get('x-api-key') != $_ENV['API_KEY']) {
-            throw new \Exception('This API Key is not valid', Response::HTTP_UNAUTHORIZED);
-        }
     }
 
     public function supports(ParamConverter $configuration): bool
