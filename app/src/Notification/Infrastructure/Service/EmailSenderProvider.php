@@ -14,11 +14,13 @@ final class EmailSenderProvider implements EmailSenderProviderInterface
 {
     private MailerInterface $mailer;
     private LoggerInterface $logger;
+    private string $adminMailer;
 
-    public function __construct(MailerInterface $mailer, LoggerInterface $logger = null)
+    public function __construct(MailerInterface $mailer, LoggerInterface $logger = null, string $adminMailer)
     {
         $this->mailer = $mailer;
         $this->logger = $logger;
+        $this->adminMailer = $adminMailer;
     }
 
     /**
@@ -27,7 +29,7 @@ final class EmailSenderProvider implements EmailSenderProviderInterface
     public function process(string $body, string $recipient): void
     {
         $email = (new Email())
-            ->from($_ENV['ADMIN_MAILER'])
+            ->from($this->adminMailer)
             ->to($recipient)
             ->subject('Email verification')
             ->html($body);

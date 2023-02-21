@@ -22,9 +22,7 @@ final class CreateVerificationParamConverter implements ParamConverterInterface
         if (!array_key_exists('subject', $parameters)) {
             throw new \InvalidArgumentException('Subject Parameter not found');
         }
-        $createVerificationCommand = new CreateVerificationCommand();
-        $createVerificationCommand->setIdentity($parameters['subject']['identity']);
-        $createVerificationCommand->setIdentityType($parameters['subject']['type']);
+        $createVerificationCommand = new CreateVerificationCommand($parameters['subject']['identity'],$parameters['subject']['type']);
         $request->attributes->set($configuration->getName(), $createVerificationCommand);
 
         return true;

@@ -40,9 +40,9 @@ final class Subject
     /**
      * check the same subject found before in our DB or not.
      */
-    public function isEqual(VerificationRepositoryInterface $verificationRepository, Subject $currentSubject): bool
+    public function isEqual(VerificationRepositoryInterface $verificationRepository): bool
     {
-        $result = $verificationRepository->findOneBy(['subject.identity' => $currentSubject->getIdentity(), 'subject.identityType' => $currentSubject->getIdentityType()]);
+        $result = $verificationRepository->findOneBy(['subject.identity' => $this->getIdentity(), 'subject.identityType' => $this->getIdentityType()]);
         if (!empty($result) && !$result->isConfirmed()) {
             return false;
         }

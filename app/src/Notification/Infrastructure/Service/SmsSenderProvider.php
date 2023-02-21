@@ -11,10 +11,14 @@ use Psr\Log\LoggerInterface;
 final class SmsSenderProvider implements SmsSenderProviderInterface
 {
     private LoggerInterface $logger;
+    private string $smsToken;
+    private string $smsUrl;
 
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger, string $smsToken, string $smsUrl)
     {
         $this->logger = $logger;
+        $this->smsToken = $smsToken;
+        $this->smsUrl = $smsUrl;
     }
 
     /**
@@ -23,7 +27,7 @@ final class SmsSenderProvider implements SmsSenderProviderInterface
     public function process(string $body): int
     {
         $client = new \GuzzleHttp\Client([
-            'base_uri' => $_ENV['APP_SMS_URL'],
+            'base_uri' => $this->smsUrl,
             'debug' => false,
             'defaults' => [
                 'exceptions' => false,
@@ -54,7 +58,7 @@ final class SmsSenderProvider implements SmsSenderProviderInterface
 
     private function getUri(): string
     {
-        return '/message?token='.$_ENV['APP_SMS_TOKEN'];
+        return '/message?token='.$this->smsToken;
     }
 
     private function getCredentials(string $body): array

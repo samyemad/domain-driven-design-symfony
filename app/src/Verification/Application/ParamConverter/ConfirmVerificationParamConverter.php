@@ -23,8 +23,7 @@ final class ConfirmVerificationParamConverter implements ParamConverterInterface
             throw new \InvalidArgumentException('The verification Id Not exist on the URL');
         }
         $id = $request->attributes->get('id');
-        $confirmVerificationCommand = new ConfirmVerificationCommand($id);
-        $confirmVerificationCommand->setCode($parameters['code']);
+        $confirmVerificationCommand = new ConfirmVerificationCommand($id,$parameters['code']);
         $request->attributes->set($configuration->getName(), $confirmVerificationCommand);
 
         return true;

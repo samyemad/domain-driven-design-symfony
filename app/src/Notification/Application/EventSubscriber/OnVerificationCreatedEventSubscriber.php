@@ -35,11 +35,9 @@ final class OnVerificationCreatedEventSubscriber implements EventSubscriberInter
      */
     public function createNotification(VerificationCreatedEvent $event): void
     {
-        $createNotificationCommand = new CreateNotificationCommand();
+
         $channel = $this->translatorProvider->translateChannel($event->getSubject()->getIdentityType());
-        $createNotificationCommand->setChannel($channel);
-        $createNotificationCommand->setRecipient($event->getSubject()->getIdentity());
-        $createNotificationCommand->setCode($event->getCode());
+        $createNotificationCommand = new CreateNotificationCommand($event->getSubject()->getIdentity(),$channel,$event->getCode());
         $this->messageBus->dispatch($createNotificationCommand);
     }
 }

@@ -11,10 +11,12 @@ use Psr\Log\LoggerInterface;
 final class TemplateRenderProvider implements TemplateRenderProviderInterface
 {
     private LoggerInterface $logger;
+    private string $internalDomain;
 
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger, string $internalDomain)
     {
         $this->logger = $logger;
+        $this->internalDomain = $internalDomain;
     }
 
     /**
@@ -24,7 +26,7 @@ final class TemplateRenderProvider implements TemplateRenderProviderInterface
     {
         $responseBody = null;
         $client = new \GuzzleHttp\Client([
-            'base_uri' => $_ENV['APP_INTERNAL_DOMAIN'],
+            'base_uri' => $this->internalDomain,
             'debug' => false,
             'defaults' => [
                 'exceptions' => true,
