@@ -50,30 +50,20 @@ class Verification extends AggregateRoot
         return $this->subject;
     }
 
-    private function setSubject(Subject $subject): void
-    {
-        $this->subject = $subject;
-    }
+
 
     public function getUserInfo(): UserInfo
     {
         return $this->userInfo;
     }
 
-    private function setUserInfo(UserInfo $userInfo): void
-    {
-        $this->userInfo = $userInfo;
-    }
 
     public function getCode(): ?string
     {
         return $this->code;
     }
 
-    private function setCode(string $code): void
-    {
-        $this->code = $code;
-    }
+
 
     public function isConfirmed(): bool
     {
@@ -110,11 +100,6 @@ class Verification extends AggregateRoot
         return $this->createdAt;
     }
 
-    private function setCreatedAt(\DateTimeImmutable $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
@@ -142,7 +127,7 @@ class Verification extends AggregateRoot
     /**
      * confirm the verification based on code and user info.
      */
-    public function confirm(VerificationRepositoryInterface $verificationRepository, string $code, UserInfo $userInfo,string $validationAllowedTime): self
+    public function confirm(VerificationRepositoryInterface $verificationRepository, string $code, UserInfo $userInfo,int $validationAllowedTime): self
     {
         if ($this->checkVerification() &&
             $this->checkTimeExpiration($validationAllowedTime) &&
@@ -206,7 +191,7 @@ class Verification extends AggregateRoot
     /**
      * check the time expiration in verification according to current time and created verification time.
      */
-    private function checkTimeExpiration($validationAllowedTime): bool
+    private function checkTimeExpiration(int $validationAllowedTime): bool
     {
         $createdAtTime = $this->createdAt->getTimestamp();
         $currentTime = time();

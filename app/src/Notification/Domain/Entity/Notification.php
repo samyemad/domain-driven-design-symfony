@@ -39,11 +39,6 @@ class Notification extends AggregateRoot
         return $this->body;
     }
 
-    private function setBody(string $body): void
-    {
-        $this->body = $body;
-    }
-
     public function getDispatched(): bool
     {
         return $this->dispatched;
@@ -59,20 +54,12 @@ class Notification extends AggregateRoot
         return $this->recipient;
     }
 
-    private function setRecipient(string $recipient): void
-    {
-        $this->recipient = $recipient;
-    }
-
     public function getChannel(): string
     {
         return $this->channel;
     }
 
-    private function setChannel(string $channel): void
-    {
-        $this->channel = $channel;
-    }
+
     public function updateDispatch(): self
     {
         $this->setDispatched(true);

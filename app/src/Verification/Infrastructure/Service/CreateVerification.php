@@ -26,7 +26,6 @@ final class CreateVerification implements CreateVerificationInterface
         VerificationRepositoryInterface $verificationRepository,
         EventDispatcherInterface $eventDispatcher,
         SerializerInterface $serializer,
-        string $validationAllowedTime
     ) {
         $this->verificationRepository = $verificationRepository;
         $this->eventDispatcher = $eventDispatcher;

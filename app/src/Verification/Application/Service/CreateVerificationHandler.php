@@ -20,18 +20,14 @@ final class CreateVerificationHandler implements MessageHandlerInterface
     private UserProviderInterface $userProvider;
     private CodeGeneratorProviderInterface $codeGeneratorProvider;
 
-
     public function __construct(
         CreateVerificationInterface $createVerification,
         UserProviderInterface $userProvider,
         CodeGeneratorProviderInterface $codeGeneratorProvider,
-
-
     ) {
         $this->createVerification = $createVerification;
         $this->userProvider = $userProvider;
         $this->codeGeneratorProvider = $codeGeneratorProvider;
-
     }
 
     /**
@@ -43,6 +39,6 @@ final class CreateVerificationHandler implements MessageHandlerInterface
 
         $subject = new Subject($createVerificationCommand->getIdentity(), $createVerificationCommand->getIdentityType());
         $verification = new Verification($verificationId,$subject,$this->userProvider->process(),$this->codeGeneratorProvider->process());
-        return $this->createVerification->process($verificationId, $verification, $subject);
+        return $this->createVerification->process($verificationId, $verification);
     }
 }

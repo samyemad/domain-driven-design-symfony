@@ -16,13 +16,13 @@ final class ConfirmVerificationHandler implements MessageHandlerInterface
     private VerificationRepositoryInterface $verificationRepository;
     private UserProviderInterface $userProvider;
     private SerializerInterface $serializer;
-    private string $validationAllowedTime;
+    private int $validationAllowedTime;
 
     public function __construct(
         VerificationRepositoryInterface $verificationRepository,
         SerializerInterface $serializer,
         UserProviderInterface $userProvider,
-        string $validationAllowedTime
+        int $validationAllowedTime
     ) {
         $this->verificationRepository = $verificationRepository;
         $this->serializer = $serializer;
