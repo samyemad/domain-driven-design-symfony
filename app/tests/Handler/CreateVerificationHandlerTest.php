@@ -4,16 +4,18 @@ namespace App\Tests\Handler;
 
 use App\Notification\Infrastructure\Service\SmsSenderProvider;
 use App\Verification\Application\Service\CreateVerificationHandler;
+use App\Verification\Domain\Service\Interfaces\CodeGeneratorProviderInterface;
+use App\Verification\Domain\Service\Interfaces\UserProviderInterface;
 use App\Verification\Infrastructure\Service\CreateVerification;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use App\Verification\Application\Model\CreateVerificationCommand;
+use App\Verification\Domain\Entity\UserInfo;
 
 class CreateVerificationHandlerTest extends KernelTestCase
 {
-    /**
-     * @var $container
-     */
+
     private $container;
+
     protected function setUp(): void
     {
         self::bootKernel();
@@ -38,7 +40,11 @@ class CreateVerificationHandlerTest extends KernelTestCase
     public function testResult(CreateVerificationCommand $command)
     {
 
-        $createVerificationHandler=new CreateVerificationHandler($this->container->get(CreateVerification::class));
+        $createVerificationHandler=new CreateVerificationHandler(
+            $this->container->get(CreateVerification::class),
+            $this->getUserProviderMock(),
+            $this->getCodeGeneratorProviderMock()
+        );
         $result=$createVerificationHandler($command);
         $this->assertIsArray($result);
         $this->assertEquals(200,$result['code']);
@@ -52,11 +58,30 @@ class CreateVerificationHandlerTest extends KernelTestCase
      */
     private function createCommand(string $identity, string $type): CreateVerificationCommand
     {
-        $createVerificationCommand = new CreateVerificationCommand();
-        $createVerificationCommand->setIdentity($identity);
-        $createVerificationCommand->setIdentityType($type);
-        return $createVerificationCommand;
+        return new CreateVerificationCommand($identity,$type);
 
+    }
+
+    private function getUserProviderMock(): UserProviderInterface
+    {
+        $mock = $this
+            ->getMockBuilder(UserProviderInterface::class)
+            ->getMock();
+        $mock
+            ->method('process')
+            ->willReturn(new Userinfo('192.168.1.1','chrome'));
+        return $mock;
+    }
+
+    private function getCodeGeneratorProviderMock(): CodeGeneratorProviderInterface
+    {
+        $mock = $this
+            ->getMockBuilder(CodeGeneratorProviderInterface::class)
+            ->getMock();
+        $mock
+            ->method('process')
+            ->willReturn('723eae02f');
+        return $mock;
     }
 
     protected function tearDown(): void

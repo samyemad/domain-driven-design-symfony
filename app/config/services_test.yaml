@@ -1,11 +1,19 @@
+parameters:
+    test.admin_mailer: '%env(ADMIN_MAILER)%'
 services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            'string $internalDomain': '%env(APP_INTERNAL_DOMAIN)%'
+            'string $smsToken': '%env(APP_SMS_TOKEN)%'
+            'string $smsUrl': '%env(APP_SMS_URL)%'
 
     App\Notification\Infrastructure\Service\TemplateRenderProvider:
         public: true
     App\Notification\Infrastructure\Service\SmsSenderProvider:
         public: true
     App\Verification\Infrastructure\Service\CreateVerification:
+        public: true
+    App\Template\Infrastructure\Repository\TemplateRepository:
         public: true

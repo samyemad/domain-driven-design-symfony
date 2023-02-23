@@ -16,7 +16,7 @@ final class EmailSenderProvider implements EmailSenderProviderInterface
     private LoggerInterface $logger;
     private string $adminMailer;
 
-    public function __construct(MailerInterface $mailer, LoggerInterface $logger = null, string $adminMailer)
+    public function __construct(MailerInterface $mailer, LoggerInterface $logger, string $adminMailer)
     {
         $this->mailer = $mailer;
         $this->logger = $logger;

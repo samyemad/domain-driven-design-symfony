@@ -57,9 +57,6 @@ services:
     App\Verification\Infrastructure\Service\CodeGeneratorProvider: ~
     App\Verification\Domain\Service\Interfaces\CodeGeneratorProviderInterface $codeGeneratorProvider: '@App\Verification\Infrastructure\Service\CodeGeneratorProvider'
 
-    App\Verification\Domain\Service\CheckVerification: ~
-    App\Verification\Domain\Service\Interfaces\CheckVerificationInterface $checkVerification: '@App\Verification\Domain\Service\CheckVerification'
-
     App\Template\Infrastructure\Render\TemplateResponseRender: ~
     App\Template\Domain\Service\Interfaces\TemplateResponseRenderInterface $templateResponseRender: '@App\Template\Infrastructure\Render\TemplateResponseRender'
 
