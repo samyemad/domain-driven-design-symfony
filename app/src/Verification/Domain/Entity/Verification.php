@@ -31,9 +31,13 @@ class Verification extends AggregateRoot
 
     private int $suppliedTimes = 0;
 
-    public function __construct(VerificationId $id)
+    public function __construct(VerificationId $id,Subject $subject,UserInfo $userInfo, string $code)
     {
         $this->id = $id->getValue();
+        $this->subject = $subject;
+        $this->userInfo = $userInfo;
+        $this->code = $code;
+        $this->createdAt = new \DateTimeImmutable('now');
     }
 
     public function getId(): ?VerificationId
@@ -46,30 +50,20 @@ class Verification extends AggregateRoot
         return $this->subject;
     }
 
-    private function setSubject(Subject $subject): void
-    {
-        $this->subject = $subject;
-    }
+
 
     public function getUserInfo(): UserInfo
     {
         return $this->userInfo;
     }
 
-    private function setUserInfo(UserInfo $userInfo): void
-    {
-        $this->userInfo = $userInfo;
-    }
 
     public function getCode(): ?string
     {
         return $this->code;
     }
 
-    private function setCode(string $code): void
-    {
-        $this->code = $code;
-    }
+
 
     public function isConfirmed(): bool
     {
@@ -106,11 +100,6 @@ class Verification extends AggregateRoot
         return $this->createdAt;
     }
 
-    private function setCreatedAt(\DateTimeImmutable $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
@@ -124,18 +113,10 @@ class Verification extends AggregateRoot
     /**
      * create verification based on subject and user info and code and record verification created event.
      */
-    public function create(
-        Subject $subject,
-        UserInfo $userInfo,
-        string $code,
-        VerificationRepositoryInterface $verificationRepository
-    ): self {
-        if ($subject->isEqual($verificationRepository, $subject)) {
-            $this->setSubject($subject);
-            $this->setUserInfo($userInfo);
-            $this->setCreatedAt(new \DateTimeImmutable('now'));
-            $this->setCode($code);
-            $this->recordDomainEvent(new VerificationCreatedEvent($this->getId(), $code, $subject));
+    public function create(VerificationRepositoryInterface $verificationRepository): self
+       {
+        if ($this->subject->isEqual($verificationRepository)) {
+            $this->recordDomainEvent(new VerificationCreatedEvent($this->getId(), $this->code, $this->subject));
         } else {
             $this->addDomainMessage(['code' => Response::HTTP_CONFLICT, 'message' => ' This subject has been before']);
         }
@@ -146,10 +127,10 @@ class Verification extends AggregateRoot
     /**
      * confirm the verification based on code and user info.
      */
-    public function confirm(VerificationRepositoryInterface $verificationRepository, string $code, UserInfo $userInfo): self
+    public function confirm(VerificationRepositoryInterface $verificationRepository, string $code, UserInfo $userInfo,int $validationAllowedTime): self
     {
         if ($this->checkVerification() &&
-            $this->checkTimeExpiration() &&
+            $this->checkTimeExpiration($validationAllowedTime) &&
             $this->checkClientInfo($userInfo) &&
             $this->checkVerificationCode($verificationRepository, $code)) {
             $this->setConfirmed(true);
@@ -210,19 +191,16 @@ class Verification extends AggregateRoot
     /**
      * check the time expiration in verification according to current time and created verification time.
      */
-    private function checkTimeExpiration(): bool
+    private function checkTimeExpiration(int $validationAllowedTime): bool
     {
         $createdAtTime = $this->createdAt->getTimestamp();
         $currentTime = time();
-        $validationAllowedTime = $_ENV['APP_VALIDATION_ALLOWED_TIME'];
         if (($createdAtTime + $validationAllowedTime) <= $currentTime) {
             $this->setExpired(true);
             $this->setUpdatedAt(new \DateTimeImmutable('now'));
             $this->addDomainMessage(['code' => Response::HTTP_GONE, 'message' => 'Verification expired']);
-
             return false;
         }
-
         return true;
     }
 

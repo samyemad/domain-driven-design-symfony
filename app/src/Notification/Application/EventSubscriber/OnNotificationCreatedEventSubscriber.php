@@ -31,10 +31,7 @@ final class OnNotificationCreatedEventSubscriber implements EventSubscriberInter
      */
     public function dispatchNotification(NotificationCreatedEvent $event): void
     {
-        $dispatchNotificationCommand = new DispatchNotificationCommand($event->getNotificationId()->getValue());
-        $dispatchNotificationCommand->setChannel($event->getChannel());
-        $dispatchNotificationCommand->setRecipient($event->getRecipient());
-        $dispatchNotificationCommand->setBody($event->getBody());
+        $dispatchNotificationCommand = new DispatchNotificationCommand($event->getNotificationId()->getValue(),$event->getRecipient(),$event->getChannel(),$event->getBody());
         $this->messageBus->dispatch($dispatchNotificationCommand);
     }
 }

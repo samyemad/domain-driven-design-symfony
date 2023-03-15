@@ -10,28 +10,18 @@ final class ConfirmVerificationCommand
 
     private string $code;
 
-    public function __construct(string $verificationId)
+    public function __construct(string $verificationId,string $code)
     {
         $this->verificationId = $verificationId;
+        $this->code = $code;
     }
 
     public function getCode(): string
     {
         return $this->code;
     }
-
-    public function setCode(string $code): void
-    {
-        $this->code = $code;
-    }
-
     public function getVerificationId(): string
     {
         return $this->verificationId;
-    }
-
-    public function setVerificationId(string $verificationId): void
-    {
-        $this->verificationId = $verificationId;
     }
 }

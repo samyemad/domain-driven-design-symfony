@@ -18,36 +18,26 @@ use Symfony\Component\Serializer\SerializerInterface;
 final class CreateVerification implements CreateVerificationInterface
 {
     private EventDispatcherInterface $eventDispatcher;
-    private UserProviderInterface $userProvider;
-    private CodeGeneratorProviderInterface $codeGeneratorProvider;
     private VerificationRepositoryInterface $verificationRepository;
     private SerializerInterface $serializer;
+
 
     public function __construct(
         VerificationRepositoryInterface $verificationRepository,
         EventDispatcherInterface $eventDispatcher,
-        UserProviderInterface $userProvider,
-        CodeGeneratorProviderInterface $codeGeneratorProvider,
         SerializerInterface $serializer,
     ) {
         $this->verificationRepository = $verificationRepository;
         $this->eventDispatcher = $eventDispatcher;
-        $this->userProvider = $userProvider;
-        $this->codeGeneratorProvider = $codeGeneratorProvider;
         $this->serializer = $serializer;
     }
 
     /**
      * create verification based on verification id and subject and save it to DB and then dispatch our domain events.
      */
-    public function process(VerificationId $verificationId, Verification $verification, Subject $subject): array
+    public function process(VerificationId $verificationId, Verification $verification): array
     {
-        $verification->create(
-            $subject,
-            $this->userProvider->process(),
-            $this->codeGeneratorProvider->process(),
-            $this->verificationRepository
-        );
+        $verification->create($this->verificationRepository);
         if (empty($verification->getDomainMessages())) {
             $this->verificationRepository->save($verification);
             foreach ($verification->pullDomainEvents() as $domainEvent) {

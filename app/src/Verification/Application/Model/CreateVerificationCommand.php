@@ -10,23 +10,19 @@ final class CreateVerificationCommand
 
     private string $identityType;
 
+    public function __construct(string $identity,string $identityType)
+    {
+        $this->identity = $identity;
+        $this->identityType = $identityType;
+    }
+
     public function getIdentity(): string
     {
         return $this->identity;
     }
 
-    public function setIdentity(string $identity): void
-    {
-        $this->identity = $identity;
-    }
-
     public function getIdentityType(): string
     {
         return $this->identityType;
-    }
-
-    public function setIdentityType(string $identityType): void
-    {
-        $this->identityType = $identityType;
     }
 }

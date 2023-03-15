@@ -17,8 +17,9 @@ From the base directory run these steps:
 4. Connect to mysql and create DB
 5. Put the name of db inside .env to parameter (MYSQL_DATABASE)
 6. In terminal execute this command (make database-update)
-8. Your application will be run on (http://localhost:3333/)
-9. Run rabbitmq you can execute ( make rabbitmq-execute)
+8. Your application will be run on (http://localhost:3333/) if you don't use kong
+9.  Your application will be run on (http://localhost:8000/) if you use kong
+10. Run rabbitmq you can execute ( make rabbitmq-execute)
 
 
 
@@ -28,11 +29,9 @@ From the base directory run these steps:
 
 2- I didn't write more unit tests because i don't have enough time
 
-
-
 ## Entities
 
-4. if you create a new entity you can update schema with this command ( make database-update)
+1. if you create a new entity you can update schema with this command ( make database-update)
 
 ## Tests
 1. To run Unit Test execute this command (make phpunit)

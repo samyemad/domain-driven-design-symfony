@@ -9,6 +9,13 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            'string $adminMailer': '%env(ADMIN_MAILER)%'
+            'string $internalDomain': '%env(APP_INTERNAL_DOMAIN)%'
+            'int $lengthCode': '%env(APP_LENGTH_CODE)%'
+            'string $smsToken': '%env(APP_SMS_TOKEN)%'
+            'string $smsUrl': '%env(APP_SMS_URL)%'
+            'int $validationAllowedTime': '%env(APP_VALIDATION_ALLOWED_TIME)%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -40,9 +47,6 @@ services:
     App\Verification\Application\ParamConverter\ConfirmVerificationParamConverter:
         tags:
             - { name: request.param_converter, converter: ConfirmVerification }
-    App\Template\Application\ParamConverter\TemplateRenderParamConverter:
-        tags:
-            - { name: request.param_converter, converter: TemplateRender }
 
     App\Verification\Infrastructure\Service\UserProvider: ~
     App\Verification\Domain\Service\Interfaces\UserProviderInterface $userProvider: '@App\Verification\Infrastructure\Service\UserProvider'
@@ -52,9 +56,6 @@ services:
 
     App\Verification\Infrastructure\Service\CodeGeneratorProvider: ~
     App\Verification\Domain\Service\Interfaces\CodeGeneratorProviderInterface $codeGeneratorProvider: '@App\Verification\Infrastructure\Service\CodeGeneratorProvider'
-
-    App\Verification\Domain\Service\CheckVerification: ~
-    App\Verification\Domain\Service\Interfaces\CheckVerificationInterface $checkVerification: '@App\Verification\Domain\Service\CheckVerification'
 
     App\Template\Infrastructure\Render\TemplateResponseRender: ~
     App\Template\Domain\Service\Interfaces\TemplateResponseRenderInterface $templateResponseRender: '@App\Template\Infrastructure\Render\TemplateResponseRender'

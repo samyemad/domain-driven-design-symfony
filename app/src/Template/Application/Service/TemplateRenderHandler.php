@@ -34,9 +34,8 @@ final class TemplateRenderHandler implements MessageHandlerInterface
     {
         $response = $this->templateResponseRender->process($templateRenderCommand->getAdditionalVariables(), $templateRenderCommand->getSlug());
         $templateId = new TemplateId(Uuid::uuid4()->toString());
-        $template = new Template($templateId);
         $content = new Content($response->getContent());
-        $template->create($templateRenderCommand->getSlug(), $content);
+        $template = new Template($templateId,$templateRenderCommand->getSlug(),$content);
         $this->templateRepository->save($template);
 
         return $response;

@@ -16,15 +16,18 @@ final class ConfirmVerificationHandler implements MessageHandlerInterface
     private VerificationRepositoryInterface $verificationRepository;
     private UserProviderInterface $userProvider;
     private SerializerInterface $serializer;
+    private int $validationAllowedTime;
 
     public function __construct(
         VerificationRepositoryInterface $verificationRepository,
         SerializerInterface $serializer,
-        UserProviderInterface $userProvider
+        UserProviderInterface $userProvider,
+        int $validationAllowedTime
     ) {
         $this->verificationRepository = $verificationRepository;
         $this->serializer = $serializer;
         $this->userProvider = $userProvider;
+        $this->validationAllowedTime= $validationAllowedTime;
     }
 
     /**
@@ -38,7 +41,7 @@ final class ConfirmVerificationHandler implements MessageHandlerInterface
             throw new NotFoundHttpException('Verification not found');
         }
         $currentUserInfo = $this->userProvider->process();
-        $verification->confirm($this->verificationRepository, $confirmVerificationCommand->getCode(), $currentUserInfo);
+        $verification->confirm($this->verificationRepository, $confirmVerificationCommand->getCode(), $currentUserInfo,$this->validationAllowedTime);
         $this->verificationRepository->save($verification);
         if (!empty($verification->getDomainMessages())) {
             $result['code'] = $verification->getDomainMessages()['code'];

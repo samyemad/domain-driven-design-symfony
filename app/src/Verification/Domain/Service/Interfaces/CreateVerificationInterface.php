@@ -10,5 +10,5 @@ use App\Verification\Domain\Entity\VerificationId;
 
 interface CreateVerificationInterface
 {
-    public function process(VerificationId $verificationId, Verification $verification, Subject $subject): array;
+    public function process(VerificationId $verificationId, Verification $verification): array;
 }

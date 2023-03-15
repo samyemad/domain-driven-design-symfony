@@ -11,10 +11,12 @@ use Psr\Log\LoggerInterface;
 final class TemplateRenderProvider implements TemplateRenderProviderInterface
 {
     private LoggerInterface $logger;
+    private string $internalDomain;
 
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger, string $internalDomain)
     {
         $this->logger = $logger;
+        $this->internalDomain = $internalDomain;
     }
 
     /**
@@ -24,7 +26,7 @@ final class TemplateRenderProvider implements TemplateRenderProviderInterface
     {
         $responseBody = null;
         $client = new \GuzzleHttp\Client([
-            'base_uri' => $_ENV['APP_INTERNAL_DOMAIN'],
+            'base_uri' => $this->internalDomain,
             'debug' => false,
             'defaults' => [
                 'exceptions' => true,
@@ -54,21 +56,19 @@ final class TemplateRenderProvider implements TemplateRenderProviderInterface
     private function getHeaders(): array
     {
         return [
-            'Content-Type' => 'application/json',
-            'x-api-key' => $_ENV['API_KEY'],
+            'Content-Type' => 'application/json'
         ];
     }
 
     private function getUri(): string
     {
-        return '/templates/render';
+        return '/api/templates/render';
     }
 
     private function getCredentials(string $channel, string $code): array
     {
         $data['slug'] = $channel;
         $data['variables']['code'] = $code;
-
         return $data;
     }
 }

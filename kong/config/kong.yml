@@ -1,0 +1,41 @@
+_format_version: "2.1"
+
+services:
+  - name: verification-service
+    url: http://host.docker.internal:3333/api/verifications
+    routes:
+      - name: verifications-route
+        paths:
+          - /verifications
+  - name: template-service
+    url: http://host.docker.internal:3333/api/templates/render
+    routes:
+      - name: template-route
+        paths:
+          - /templates/render
+
+consumers:
+  - username: user
+
+keyauth_credentials:
+  - consumer: user
+    key: P6bNaqXNJyWHCpnad0nxGKYAT8QmYV7xPKsaHJ74hn0WLp739gZskGedwZpUDz1c
+# plugins section
+plugins:
+  - name: key-auth
+    service: template-service
+    config:
+      key_names:
+        - x-api-key
+      key_in_body: false
+      key_in_header: true
+      key_in_query: true
+      hide_credentials: false
+      run_on_preflight: true
+    enabled: true
+
+
+
+
+
+

@@ -10,14 +10,15 @@ final class TemplateRenderCommand
 
     private array $additionalVariables;
 
+    public function __construct(string $slug, array $additionalVariables)
+    {
+        $this->slug = $slug;
+        $this->additionalVariables = $additionalVariables;
+    }
+
     public function getSlug(): string
     {
         return $this->slug;
-    }
-
-    public function setSlug(string $slug): void
-    {
-        $this->slug = $slug;
     }
 
     public function getAdditionalVariables(): array
@@ -25,8 +26,5 @@ final class TemplateRenderCommand
         return $this->additionalVariables;
     }
 
-    public function setAdditionalVariables(array $additionalVariables): void
-    {
-        $this->additionalVariables = $additionalVariables;
-    }
+
 }

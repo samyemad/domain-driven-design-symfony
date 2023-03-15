@@ -35,11 +35,9 @@ final class CreateNotificationHandler implements MessageHandlerInterface
     public function __invoke(CreateNotificationCommand $createNotificationCommand): void
     {
         $body = $this->templateRenderProvider->process($createNotificationCommand->getChannel(), $createNotificationCommand->getCode());
-
         if ('' != $body) {
             $notificationId = new NotificationId(Uuid::uuid4()->toString());
-            $notification = new Notification($notificationId);
-            $notification->create($createNotificationCommand->getRecipient(), $createNotificationCommand->getChannel(), $body);
+            $notification = new Notification($notificationId,$createNotificationCommand->getRecipient(), $createNotificationCommand->getChannel(), $body);
             $this->notificationRepository->save($notification);
             foreach ($notification->pullDomainEvents() as $domainEvent) {
                 $this->eventDispatcher->dispatch($domainEvent);

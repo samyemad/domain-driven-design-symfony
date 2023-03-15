@@ -12,7 +12,7 @@ class Notification extends AggregateRoot
 {
     private string $id;
 
-    private bool $dispatched;
+    private bool $dispatched = false;
 
     private string $recipient;
 
@@ -20,9 +20,13 @@ class Notification extends AggregateRoot
 
     private string $body;
 
-    public function __construct(NotificationId $id)
+    public function __construct(NotificationId $id,string $recipient,string $channel,string $body)
     {
         $this->id = $id->getValue();
+        $this->recipient = $recipient;
+        $this->channel = $channel;
+        $this->body = $body;
+        $this->recordDomainEvent(new NotificationCreatedEvent($this->getId(), $channel, $body, $recipient));
     }
 
     public function getId(): ?NotificationId
@@ -33,11 +37,6 @@ class Notification extends AggregateRoot
     public function getBody(): string
     {
         return $this->body;
-    }
-
-    private function setBody(string $body): void
-    {
-        $this->body = $body;
     }
 
     public function getDispatched(): bool
@@ -55,40 +54,16 @@ class Notification extends AggregateRoot
         return $this->recipient;
     }
 
-    private function setRecipient(string $recipient): void
-    {
-        $this->recipient = $recipient;
-    }
-
     public function getChannel(): string
     {
         return $this->channel;
     }
 
-    private function setChannel(string $channel): void
-    {
-        $this->channel = $channel;
-    }
-
-    public function create(
-        string $recipient,
-        string $channel,
-        string $body
-    ): self {
-        $this->setRecipient($recipient);
-        $this->setChannel($channel);
-        $this->setBody($body);
-        $this->setDispatched(false);
-        $this->recordDomainEvent(new NotificationCreatedEvent($this->getId(), $channel, $body, $recipient));
-
-        return $this;
-    }
 
     public function updateDispatch(): self
     {
         $this->setDispatched(true);
         $this->recordDomainEvent(new NotificationDispatchedEvent($this->getId()));
-
         return $this;
     }
 }

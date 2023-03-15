@@ -16,9 +16,12 @@ class Template extends AggregateRoot
 
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(TemplateId $id)
+    public function __construct(TemplateId $id,string $slug, Content $content)
     {
         $this->id = $id->getValue();
+        $this->slug = $slug;
+        $this->content = $content;
+        $this->createdAt = new \DateTimeImmutable('now');
     }
 
     public function getId(): ?TemplateId
@@ -31,37 +34,13 @@ class Template extends AggregateRoot
         return $this->content;
     }
 
-    private function setContent(Content $content): void
-    {
-        $this->content = $content;
-    }
-
     public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    private function setSlug(string $slug): void
-    {
-        $this->slug = $slug;
-    }
-
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
-    }
-
-    private function setCreatedAt(\DateTimeImmutable $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function create(string $slug, Content $content): self
-    {
-        $this->setSlug($slug);
-        $this->setContent($content);
-        $this->setCreatedAt(new \DateTimeImmutable('now'));
-
-        return $this;
     }
 }

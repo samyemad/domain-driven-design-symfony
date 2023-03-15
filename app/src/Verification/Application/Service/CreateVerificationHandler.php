@@ -8,18 +8,26 @@ use App\Verification\Application\Model\CreateVerificationCommand;
 use App\Verification\Domain\Entity\Subject;
 use App\Verification\Domain\Entity\Verification;
 use App\Verification\Domain\Entity\VerificationId;
+use App\Verification\Domain\Service\Interfaces\CodeGeneratorProviderInterface;
 use App\Verification\Domain\Service\Interfaces\CreateVerificationInterface;
+use App\Verification\Domain\Service\Interfaces\UserProviderInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 final class CreateVerificationHandler implements MessageHandlerInterface
 {
     private CreateVerificationInterface $createVerification;
+    private UserProviderInterface $userProvider;
+    private CodeGeneratorProviderInterface $codeGeneratorProvider;
 
     public function __construct(
-        CreateVerificationInterface $createVerification
+        CreateVerificationInterface $createVerification,
+        UserProviderInterface $userProvider,
+        CodeGeneratorProviderInterface $codeGeneratorProvider,
     ) {
         $this->createVerification = $createVerification;
+        $this->userProvider = $userProvider;
+        $this->codeGeneratorProvider = $codeGeneratorProvider;
     }
 
     /**
@@ -28,8 +36,9 @@ final class CreateVerificationHandler implements MessageHandlerInterface
     public function __invoke(CreateVerificationCommand $createVerificationCommand): array
     {
         $verificationId = new VerificationId(Uuid::uuid4()->toString());
-        $verification = new Verification($verificationId);
+
         $subject = new Subject($createVerificationCommand->getIdentity(), $createVerificationCommand->getIdentityType());
-        return $this->createVerification->process($verificationId, $verification, $subject);
+        $verification = new Verification($verificationId,$subject,$this->userProvider->process(),$this->codeGeneratorProvider->process());
+        return $this->createVerification->process($verificationId, $verification);
     }
 }
